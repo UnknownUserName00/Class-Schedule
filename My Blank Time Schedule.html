@@ -1,0 +1,674 @@
+<! DOCTYPE html>
+<html>
+<head>
+    <title>My Blank Time Schedule (##$$. yr., ##$$. Sem. - COURSE)</title>
+    <style>
+        #No_Wrap {
+            white-space: pre;
+        }
+
+        #Subject_Time {
+            background-color: GreenYellow;
+        }
+
+        body {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <center>
+        <noscript>Sorry! Your browser does not support JavaScript!</noscript>
+    </center>
+    <script>
+        function JSONformat2Arrays(listLength, namesLength, namesArray, listArray) {
+            previousNum = 0;
+            collectString = "{\"list\": [{";
+            for (i = 0; i < listLength; i++) {
+                if ((i % namesLength) != 0) {
+                    collectString = collectString + ", ";
+                }
+
+                if ((i % namesLength) == 0 && (i != 0)) {
+                    previousNum = i;
+                    collectString = collectString + "},{";
+                }
+                referNum = i - previousNum;
+                collectString = collectString + "\"" + namesArray[referNum] + "\": \"" + listArray[i] + "\"";
+            }
+            collectString = collectString + "}]}";
+            convert = JSON.parse(collectString);
+        }
+
+        function resultDataList(resultDataListId) {
+            displayResult = "";
+            numLoop = 0;
+            for (i = 0; i < convert.list.length; i++) {
+                preserveSpace = 'style = "white-space: pre;"';
+                spanRow = 'rowspan = "' + convert.list[i].rowSpan + '" ';
+
+                checkNum = (convert.list[i].CourseCode == "") ? "" : '<td ' + spanRow + '>' + (numLoop + 1) + '</td>';
+
+                if (checkNum == "") {
+                    numLoop--;
+                }
+
+                checkCourseCode = (convert.list[i].CourseCode == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].CourseCode + '</td>';
+                checkDescription = (convert.list[i].Description == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Description + '</td>';
+                checkLecture = (convert.list[i].Lec == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Lec + '</td>';
+                checkLaboratory = (convert.list[i].Lab == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Lab + '</td>';
+                checkUnits = (convert.list[i].Units == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Units + '</td>';
+
+                displayResult = displayResult + '<tr align = "center">'
+                    + checkNum
+                    + '<td ' + preserveSpace + '>' + convert.list[i].Faculty + '</td>'
+                    + checkCourseCode
+                    + '<td></td>'
+                    + checkDescription
+                    + checkLecture
+                    + checkLaboratory
+                    + checkUnits
+                    + '<td ' + preserveSpace + '>' + convert.list[i].Schedule + '</td>'
+                + '</tr>';
+                numLoop++;
+            }
+            // document.getElementById("displayDataList").outerHTML = displayResult;
+            document.getElementById(resultDataListId).outerHTML = displayResult;
+        }
+
+        function resultDataSchedule(resultDataScheduleId) {
+            hourTime = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            displayResult = "";
+            hourLoop = 7;
+            numSunday = 0;
+            numMonday = 0;
+            numTuesday = 0;
+            numWednesday = 0;
+            numThursday = 0;
+            numFriday = 0;
+            numSaturday = 0;
+            for (i = 0; i < convert.list.length; i++) {
+                hourLoop = (hourLoop > 24) ? (hourLoop - 24) : hourLoop;
+                dayMode = (hourLoop < 12) ? "AM" : "PM";
+
+                colorBackground = 'style = "background-color: GreenYellow;"';
+                preserveSpace = 'style = "white-space: pre;"';
+                smallFont = 'style = "font-size: 8pt;"';
+                if ((i % 2) == 0) {
+                    time = '<th rowspan = "2" ' + preserveSpace + '>'
+                        + '<br/><p>'
+                        + '<span ' + smallFont + '>' + hourTime[hourLoop] + ':00 ' + dayMode + '</span><br/>'
+                        + hourTime[hourLoop] + ':30 ' + dayMode + '<br/>'
+                        + '<span ' + smallFont + '>' + hourTime[hourLoop] + ':59 ' + dayMode + '</span>'
+                        + '</p><br/>'
+                    + '</th>';
+                    hourLoop++;
+                }
+
+                else {
+                    time = "";
+                }
+
+                // Sunday
+                if ((convert.list[i].rowSpanSunday != 0) && (numSunday == 0)) {
+                    numSunday = convert.list[i].rowSpanSunday;
+                    displaySunday = '<th rowspan = "' + convert.list[i].rowSpanSunday + '" ' + colorBackground + '>' + convert.list[i].Sunday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanSunday == 0) && (numSunday == 0)) {
+                    displaySunday = '<td>' + convert.list[i].Sunday + '</td>';
+                }
+
+                else {
+                    displaySunday = "";
+                }
+
+                // Monday
+                if ((convert.list[i].rowSpanMonday != 0) && (numMonday == 0)) {
+                    numMonday = convert.list[i].rowSpanMonday;
+                    displayMonday = '<th rowspan = "' + convert.list[i].rowSpanMonday + '" ' + colorBackground + '>' + convert.list[i].Monday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanMonday == 0) && (numMonday == 0)) {
+                    displayMonday = '<td>' + convert.list[i].Monday + '</td>';
+                }
+
+                else {
+                    displayMonday = "";
+                }
+
+                // Tuesday
+                if ((convert.list[i].rowSpanTuesday != 0) && (numTuesday == 0)) {
+                    numTuesday = convert.list[i].rowSpanTuesday;
+                    displayTuesday = '<th rowspan = "' + convert.list[i].rowSpanTuesday + '" ' + colorBackground + '>' + convert.list[i].Tuesday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanTuesday == 0) && (numTuesday == 0)) {
+                    displayTuesday = '<td>' + convert.list[i].Tuesday + '</td>';
+                }
+
+                else {
+                    displayTuesday = "";
+                }
+
+                // Wednesday
+                if ((convert.list[i].rowSpanWednesday != 0) && (numWednesday == 0)) {
+                    numWednesday = convert.list[i].rowSpanWednesday;
+                    displayWednesday = '<th rowspan = "' + convert.list[i].rowSpanWednesday + '" ' + colorBackground + '>' + convert.list[i].Wednesday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanWednesday == 0) && (numWednesday == 0)) {
+                    displayWednesday = '<td>' + convert.list[i].Wednesday + '</td>';
+                }
+
+                else {
+                    displayWednesday = "";
+                }
+
+                // Thursday
+                if ((convert.list[i].rowSpanThursday != 0) && (numThursday == 0)) {
+                    numThursday = convert.list[i].rowSpanThursday;
+                    displayThursday = '<th rowspan = "' + convert.list[i].rowSpanThursday + '" ' + colorBackground + '>' + convert.list[i].Thursday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanThursday == 0) && (numThursday == 0)) {
+                    displayThursday = '<td>' + convert.list[i].Thursday + '</td>';
+                }
+
+                else {
+                    displayThursday = "";
+                }
+
+                // Friday
+                if ((convert.list[i].rowSpanFriday != 0) && (numFriday == 0)) {
+                    numFriday = convert.list[i].rowSpanFriday;
+                    displayFriday = '<th rowspan = "' + convert.list[i].rowSpanFriday + '" ' + colorBackground + '>' + convert.list[i].Friday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanFriday == 0) && (numFriday == 0)) {
+                    displayFriday = '<td>' + convert.list[i].Friday + '</td>';
+                }
+
+                else {
+                    displayFriday = "";
+                }
+
+                // Saturday
+                if ((convert.list[i].rowSpanSaturday != 0) && (numSaturday == 0)) {
+                    numSaturday = convert.list[i].rowSpanSaturday;
+                    displaySaturday = '<th rowspan = "' + convert.list[i].rowSpanSaturday + '" ' + colorBackground + '>' + convert.list[i].Saturday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanSaturday == 0) && (numSaturday == 0)) {
+                    displaySaturday = '<td>' + convert.list[i].Saturday + '</td>';
+                }
+
+                else {
+                    displaySaturday = "";
+                }
+
+                displayResult = displayResult + '<tr align = "center">'
+                    + time
+                    + displaySunday
+                    + displayMonday
+                    + displayTuesday
+                    + displayWednesday
+                    + displayThursday
+                    + displayFriday
+                    + displaySaturday
+                + '</tr>';
+
+                numSunday = (numSunday != 0) ? (numSunday - 1) : numSunday;
+                numMonday = (numMonday != 0) ? (numMonday - 1) : numMonday;
+                numTuesday = (numTuesday != 0) ? (numTuesday - 1) : numTuesday;
+                numWednesday = (numWednesday != 0) ? (numWednesday - 1) : numWednesday;
+                numThursday = (numThursday != 0) ? (numThursday - 1) : numThursday;
+                numFriday = (numFriday != 0) ? (numFriday - 1) : numFriday;
+                numSaturday = (numSaturday != 0) ? (numSaturday - 1) : numSaturday;
+            }
+            // document.getElementById("displayDataSchedule").outerHTML = displayResult;
+            document.getElementById(resultDataScheduleId).outerHTML = displayResult;
+        }
+    </script>
+    <script>
+        // Faculty Names
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "", "", "", "", "", "", "", ""];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList");
+    </script>
+    <script>
+        // Schedule
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule");
+    </script>
+
+    <h1 align = "center" id = "No_Wrap">My Blank Time Schedule</h1>
+
+    <table border = "2" align = "center">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">##$$. yr., ##$$. Sem. - COURSE (S.Y. #### - ####)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr align = "center">
+            <td>1</td>
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+<!--
+        <tr align = "center">
+            <td></td>
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+
+    <p>
+        <br/><br/>
+    </p>
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">7:00&nbsp;AM</font><br/>
+7:30&nbsp;AM<br/>
+<font size = "1">7:59&nbsp;AM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">8:00&nbsp;AM</font><br/>
+8:30&nbsp;AM<br/>
+<font size = "1">8:59&nbsp;AM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;AM</font><br/>
+9:30&nbsp;AM<br/>
+<font size = "1">9:59&nbsp;AM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">10:00&nbsp;AM</font><br/>
+10:30&nbsp;AM<br/>
+<font size = "1">10:59&nbsp;AM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">11:00&nbsp;AM</font><br/>
+11:30&nbsp;AM<br/>
+<font size = "1">11:59&nbsp;AM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">12:00&nbsp;PM</font><br/>
+12:30&nbsp;PM<br/>
+<font size = "1">12:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">1:00&nbsp;PM</font><br/>
+1:30&nbsp;PM<br/>
+<font size = "1">1:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">2:00&nbsp;PM</font><br/>
+2:30&nbsp;PM<br/>
+<font size = "1">2:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">3:00&nbsp;PM</font><br/>
+3:30&nbsp;PM<br/>
+<font size = "1">3:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">4:00&nbsp;PM</font><br/>
+4:30&nbsp;PM<br/>
+<font size = "1">4:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">5:00&nbsp;PM</font><br/>
+5:30&nbsp;PM<br/>
+<font size = "1">5:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">6:00&nbsp;PM</font><br/>
+6:30&nbsp;PM<br/>
+<font size = "1">6:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">7:00&nbsp;PM</font><br/>
+7:30&nbsp;PM<br/>
+<font size = "1">7:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">8:00&nbsp;PM</font><br/>
+8:30&nbsp;PM<br/>
+<font size = "1">8:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+9:30&nbsp;PM<br/>
+<font size = "1">9:59&nbsp;PM</font></th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+    </table>
+
+</body>
+</html>

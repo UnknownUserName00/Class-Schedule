@@ -1,0 +1,2317 @@
+<! DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        #No_Wrap {
+            white-space: pre;
+        }
+
+        body {
+            display: inline-block;
+        }
+
+        hr {
+            border-color: Black;
+            border-style: solid;
+            border-width: thick;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <center>
+        <noscript>Sorry! Your browser does not support JavaScript!</noscript>
+    </center>
+    <script>
+        function JSONformat2Arrays(listLength, namesLength, namesArray, listArray) {
+            previousNum = 0;
+            collectString = "{\"list\": [{";
+            for (i = 0; i < listLength; i++) {
+                if ((i % namesLength) != 0) {
+                    collectString = collectString + ", ";
+                }
+
+                if ((i % namesLength) == 0 && (i != 0)) {
+                    previousNum = i;
+                    collectString = collectString + "},{";
+                }
+                referNum = i - previousNum;
+                collectString = collectString + "\"" + namesArray[referNum] + "\": \"" + listArray[i] + "\"";
+            }
+            collectString = collectString + "}]}";
+            convert = JSON.parse(collectString);
+        }
+
+        function resultDataList(resultDataListId) {
+            displayResult = "";
+            numLoop = 0;
+            for (i = 0; i < convert.list.length; i++) {
+                preserveSpace = 'style = "white-space: pre;"';
+                spanRow = 'rowspan = "' + convert.list[i].rowSpan + '" ';
+
+                checkNum = (convert.list[i].CourseCode == "") ? "" : '<td ' + spanRow + '>' + (numLoop + 1) + '</td>';
+
+                if (checkNum == "") {
+                    numLoop--;
+                }
+
+                checkCourseCode = (convert.list[i].CourseCode == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].CourseCode + '</td>';
+                checkDescription = (convert.list[i].Description == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Description + '</td>';
+                checkLecture = (convert.list[i].Lec == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Lec + '</td>';
+                checkLaboratory = (convert.list[i].Lab == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Lab + '</td>';
+                checkUnits = (convert.list[i].Units == "") ? "" : '<td ' + spanRow + '>' + convert.list[i].Units + '</td>';
+
+                displayResult = displayResult + '<tr align = "center">'
+                    + checkNum
+                    + '<td ' + preserveSpace + '>' + convert.list[i].Faculty + '</td>'
+                    + checkCourseCode
+                    + '<td></td>'
+                    + checkDescription
+                    + checkLecture
+                    + checkLaboratory
+                    + checkUnits
+                    + '<td ' + preserveSpace + '>' + convert.list[i].Schedule + '</td>'
+                + '</tr>';
+                numLoop++;
+            }
+            // document.getElementById("displayDataList").outerHTML = displayResult;
+            document.getElementById(resultDataListId).outerHTML = displayResult;
+        }
+
+        function resultDataSchedule(resultDataScheduleId) {
+            hourTime = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+            displayResult = "";
+            hourLoop = 7;
+            numSunday = 0;
+            numMonday = 0;
+            numTuesday = 0;
+            numWednesday = 0;
+            numThursday = 0;
+            numFriday = 0;
+            numSaturday = 0;
+            for (i = 0; i < convert.list.length; i++) {
+                hourLoop = (hourLoop > 24) ? (hourLoop - 24) : hourLoop;
+                dayMode = (hourLoop < 12) ? "AM" : "PM";
+
+                colorBackground = 'style = "background-color: GreenYellow;"';
+                preserveSpace = 'style = "white-space: pre;"';
+                smallFont = 'style = "font-size: 8pt;"';
+                if ((i % 2) == 0) {
+                    time = '<th rowspan = "2" ' + preserveSpace + '>'
+                        + '<br/><p>'
+                        + '<span ' + smallFont + '>' + hourTime[hourLoop] + ':00 ' + dayMode + '</span><br/>'
+                        + hourTime[hourLoop] + ':30 ' + dayMode + '<br/>'
+                        + '<span ' + smallFont + '>' + hourTime[hourLoop] + ':59 ' + dayMode + '</span>'
+                        + '</p><br/>'
+                    + '</th>';
+                    hourLoop++;
+                }
+
+                else {
+                    time = "";
+                }
+
+                // Sunday
+                if ((convert.list[i].rowSpanSunday != 0) && (numSunday == 0)) {
+                    numSunday = convert.list[i].rowSpanSunday;
+                    displaySunday = '<th rowspan = "' + convert.list[i].rowSpanSunday + '" ' + colorBackground + '>' + convert.list[i].Sunday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanSunday == 0) && (numSunday == 0)) {
+                    displaySunday = '<td>' + convert.list[i].Sunday + '</td>';
+                }
+
+                else {
+                    displaySunday = "";
+                }
+
+                // Monday
+                if ((convert.list[i].rowSpanMonday != 0) && (numMonday == 0)) {
+                    numMonday = convert.list[i].rowSpanMonday;
+                    displayMonday = '<th rowspan = "' + convert.list[i].rowSpanMonday + '" ' + colorBackground + '>' + convert.list[i].Monday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanMonday == 0) && (numMonday == 0)) {
+                    displayMonday = '<td>' + convert.list[i].Monday + '</td>';
+                }
+
+                else {
+                    displayMonday = "";
+                }
+
+                // Tuesday
+                if ((convert.list[i].rowSpanTuesday != 0) && (numTuesday == 0)) {
+                    numTuesday = convert.list[i].rowSpanTuesday;
+                    displayTuesday = '<th rowspan = "' + convert.list[i].rowSpanTuesday + '" ' + colorBackground + '>' + convert.list[i].Tuesday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanTuesday == 0) && (numTuesday == 0)) {
+                    displayTuesday = '<td>' + convert.list[i].Tuesday + '</td>';
+                }
+
+                else {
+                    displayTuesday = "";
+                }
+
+                // Wednesday
+                if ((convert.list[i].rowSpanWednesday != 0) && (numWednesday == 0)) {
+                    numWednesday = convert.list[i].rowSpanWednesday;
+                    displayWednesday = '<th rowspan = "' + convert.list[i].rowSpanWednesday + '" ' + colorBackground + '>' + convert.list[i].Wednesday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanWednesday == 0) && (numWednesday == 0)) {
+                    displayWednesday = '<td>' + convert.list[i].Wednesday + '</td>';
+                }
+
+                else {
+                    displayWednesday = "";
+                }
+
+                // Thursday
+                if ((convert.list[i].rowSpanThursday != 0) && (numThursday == 0)) {
+                    numThursday = convert.list[i].rowSpanThursday;
+                    displayThursday = '<th rowspan = "' + convert.list[i].rowSpanThursday + '" ' + colorBackground + '>' + convert.list[i].Thursday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanThursday == 0) && (numThursday == 0)) {
+                    displayThursday = '<td>' + convert.list[i].Thursday + '</td>';
+                }
+
+                else {
+                    displayThursday = "";
+                }
+
+                // Friday
+                if ((convert.list[i].rowSpanFriday != 0) && (numFriday == 0)) {
+                    numFriday = convert.list[i].rowSpanFriday;
+                    displayFriday = '<th rowspan = "' + convert.list[i].rowSpanFriday + '" ' + colorBackground + '>' + convert.list[i].Friday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanFriday == 0) && (numFriday == 0)) {
+                    displayFriday = '<td>' + convert.list[i].Friday + '</td>';
+                }
+
+                else {
+                    displayFriday = "";
+                }
+
+                // Saturday
+                if ((convert.list[i].rowSpanSaturday != 0) && (numSaturday == 0)) {
+                    numSaturday = convert.list[i].rowSpanSaturday;
+                    displaySaturday = '<th rowspan = "' + convert.list[i].rowSpanSaturday + '" ' + colorBackground + '>' + convert.list[i].Saturday + '</th>';
+                }
+
+                else if ((convert.list[i].rowSpanSaturday == 0) && (numSaturday == 0)) {
+                    displaySaturday = '<td>' + convert.list[i].Saturday + '</td>';
+                }
+
+                else {
+                    displaySaturday = "";
+                }
+
+                displayResult = displayResult + '<tr align = "center">'
+                    + time
+                    + displaySunday
+                    + displayMonday
+                    + displayTuesday
+                    + displayWednesday
+                    + displayThursday
+                    + displayFriday
+                    + displaySaturday
+                + '</tr>';
+
+                numSunday = (numSunday != 0) ? (numSunday - 1) : numSunday;
+                numMonday = (numMonday != 0) ? (numMonday - 1) : numMonday;
+                numTuesday = (numTuesday != 0) ? (numTuesday - 1) : numTuesday;
+                numWednesday = (numWednesday != 0) ? (numWednesday - 1) : numWednesday;
+                numThursday = (numThursday != 0) ? (numThursday - 1) : numThursday;
+                numFriday = (numFriday != 0) ? (numFriday - 1) : numFriday;
+                numSaturday = (numSaturday != 0) ? (numSaturday - 1) : numSaturday;
+            }
+            // document.getElementById("displayDataSchedule").outerHTML = displayResult;
+            document.getElementById(resultDataScheduleId).outerHTML = displayResult;
+        }
+    </script>
+
+    <h2 align = "center">Compilations of Subjects, Teachers and Staff from Schools and Companies</h2>
+
+    <h2 align = "center">Immaculate Conception Academy (South Campus) (Langkaan)</h2>
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th>Faculty</th>
+            <th>Subject Hold</th>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mrs. Belinda G. Magsino?</td>
+            <td></td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Iyah Doncillo?</td>
+            <td>History</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Macaspac?</td>
+            <td>Filipino</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Louielyn Cruzado?</td>
+            <td>English</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Lhia Aruta?</td>
+            <td>Math</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Dollente?</td>
+            <td>Science</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mrs. Gian G. Nato?</td>
+            <td></td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mrs. Marinette Reyes?</td>
+            <td></td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Glenda Mae Herrera?</td>
+            <td></td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mr. Subaste Arman?</td>
+            <td>Science</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mr. Larry G. Tan?</td>
+            <td>Religion</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mr. Arvin Carillo?</td>
+            <td>Scouting</td>
+        </tr>
+<!--
+        <tr align = "center">
+            <td style = "background-color: Orange;"></td>
+            <td></td>
+        </tr>
+-->
+    </table>
+
+    <hr/>
+
+    <h2 align = "center">Vel Maris School Inc. (Cavite Campus)</h2>
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th>Faculty</th>
+            <th>Subject Hold</th>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Karen dela Cruz?</td>
+            <td>Math</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Ms. Cherry Roy?</td>
+            <td>Applied Science</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mr. Arnold R. Lugtu</td>
+            <td>Math</td>
+        </tr>
+        <tr align = "center">
+            <td style = "background-color: Orange;">Mr. Panfillo Camillan?</td>
+            <td>Computer</td>
+        </tr>
+<!--
+        <tr align = "center">
+            <td style = "background-color: Orange;"></td>
+            <td></td>
+        </tr>
+-->
+    </table>
+
+    <hr/>
+
+    <h2 align = "center">Lyceum of the Philippines University - Cavite Campus</h2>
+    <h3 align = "center">Student No.: 2013-12143 or 2013-0-12143</h3>
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">1st. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2013 - 2014)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList1stYr1stSemBSCPEorBSCoE2013to2014"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 1st. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2013 - 2014)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Ms. Myra Senica Ferrer", "CHML01E<br/>(Chemistry)", "", "General Chemistry", "3", "1", "4", "ENG 108 - T 01:00PM-04:00PM S408/F 01:00PM-04:00PM S407",
+            1, "Engr. Jerome O. Abella<br/>changed to<br/>Engr. Jay Mark A. Cambusa", "DRWL11E", "", "Engineering Drawing 1", "0", "1", "1", "ENG 108 - T 07:00AM-10:00AM S402",
+            1, "Ms. Rhia Vergara Espanto", "EGON01E", "", "Engineering Orientation", "1", "0", "1", "ENG 108 - W 10:00AM-11:00AM J324",
+            1, "Ms. Carlisa I. Alicdan", "ENGN01G<br/>(English 1)", "", "Study and Thinking Skills in English", "3", "0", "3", "ENG 108 - W 01:00PM-02:30PM S403/S 01:00PM-02:30PM S403",
+            1, "Ms. Lady Aileen G. Ambion", "FILN01A<br/>(Filipino 1)", "", "Komunikasyon sa Akademikong Filipino", "3", "0", "3", "ENG 108 - T 11:30AM-01:00PM S405/F 11:30AM-01:00PM S405",
+            1, "Engr. Laarnie P. Carlos", "MATN01G<br/>(Algebra)", "", "College Algebra", "3", "0", "3", "ENG 108 - W 08:30AM-10:00AM S407/S 08:30AM-10:00AM S407",
+            1, "Engr. Jose Rene P. Benedicto", "MTHN13E<br/>(Trigo)", "", "Plane and Spherical Trigonometry", "3", "0", "3", "ENG 108 - W 07:00AM-08:30AM S407/S 07:00AM-08:30AM S407",
+            1, "Ms. Vina V. Velasco", "NSTPN01G<br/>(NSTP 1)", "", "National Service Training Program 1", "3", "0", "3", "ENG 108 - F 07:00AM-10:00AM JRDB1/S418",
+            1, "Mr. Ni&ntilde;o C. Melindo", "PEFN01G<br/>(PE 1)", "", "Physical Fitness", "2", "0", "2", "ENG 108 - S 03:00PM-05:00PM SRDB1",
+            1, "Mr. Noel M. Geda", "PSCN01G<br/>(Philippine Consti)", "", "Politics & Governance with Philippine Constitution", "3", "0", "3", "ENG 108 - W 11:30AM-01:00PM S403/S 11:30AM-01:00PM S403"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList1stYr1stSemBSCPEorBSCoE2013to2014");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule1stYr1stSemBSCPEorBSCoE2013to2014"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 1st. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2013 - 2014)
+        chemistryClass1 = "General Chemistry<br/><br/>CHML01E<br/>ENG 108<br/>S408;";
+        chemistryClass2 = "General Chemistry<br/><br/>CHML01E<br/>ENG 108<br/>S407;";
+        engineeringDrawing1 = "Engineering Drawing 1<br/><br/>DRWL11E<br/>ENG 108<br/>S402;";
+        engineeringOrientation = "Engineering Orientation<br/><br/>EGON01E<br/>ENG 108<br/>J324;";
+        english1 = "Study and Thinking Skills in English<br/><br/>ENGN01G<br/>ENG 108<br/>S403;";
+        filipino1 = "Komunikasyon sa Akademikong Filipino<br/><br/>FILN01A<br/>ENG 108<br/>S405;";
+        collegeAlgebra = "College Algebra<br/><br/>MATN01G<br/>ENG 108<br/>S407;";
+        trigo = "Plane and Spherical Trigonometry<br/><br/>MTHN13E<br/>ENG 108<br/>S407;";
+        nstp1 = "National Service Training Program 1<br/><br/>NSTPN01G<br/>ENG 108<br/>JRDB1/S418;";
+        pe1 = "Physical Fitness<br/><br/>PEFN01G<br/>ENG 108<br/>SRDB1;";
+        philippineConsti = "Politics & Governance with Philippine Constitution<br/><br/>PSCN01G<br/>ENG 108<br/>S403;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 6, engineeringDrawing1, 3, trigo, 0, breakSpace, 6, nstp1, 3, trigo,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 3, collegeAlgebra, 0, breakSpace, 0, breakSpace, 3, collegeAlgebra,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 2, engineeringOrientation, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 3, filipino1, 3, philippineConsti, 0, breakSpace, 3, filipino1, 3, philippineConsti,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 6, chemistryClass1, 3, english1, 0, breakSpace, 6, chemistryClass2, 3, english1,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 4, pe1,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule1stYr1stSemBSCPEorBSCoE2013to2014");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">1st. yr., 2nd. Sem. - BS CPE/BS CoE (S.Y. 2013 - 2014)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList1stYr2ndSemBSCPEorBSCoE2013to2014"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 1st. yr., 2nd. Sem. - BS CPE/BS CoE (S.Y. 2013 - 2014)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Ms. Dyan E. Macabinta", "ENGN02G<br/>(English 2)", "", "Writing in the Discipline", "3", "0", "3", "ENG 108 - T 01:00PM-02:30PM J412/F 01:00PM-02:30PM J412",
+            1, "Mr. Edmunda A. Saenz", "FILN02A<br/>(Filipino 2)", "", "Pagbasa at Pagsulat Tungo sa Pananaliksik", "3", "0", "3", "ENG 108 - M 08:30AM-10:00AM J414/TH 08:30AM-10:00AM J414",
+            1, "Ms. Fatima S. Guarino", "JPLN01G<br/>(JPL)", "", "JPL Life and His Works", "3", "0", "3", "ENG 108 - T 10:00AM-11:30AM J413/F 10:00AM-11:30AM J413",
+            1, "Ms. Josefina Cadorniga de Castro", "MTHN08E<br/>(Advanced Algebra)", "", "Advanced Engineering Algebra", "2", "0", "2", "ENG 108 - TH 10:00AM-12:00PM J414",
+            1, "Ms. Jocelyn Balagao Bernardino", "MTHN14E", "", "Solid Mensuration", "2", "0", "2", "ENG 108 - M 10:00AM-12:00PM J414",
+            1, "Mr. Aldren B. Narzoles", "MTHN16E<br/>(Geometry)", "", "Analytic Geometry", "3", "0", "3", "ENG 108 - T 02:30PM-04:00PM J412/F 02:30PM-04:00PM J412",
+            1, "Ms. Vina V. Velasco", "NSTPN02G<br/>(NSTP 2)", "", "National Service Training Program 2", "3", "0", "3", "ENG 108 - T 07:00AM-10:00AM JRDB1/S411",
+            1, "Mr. Anthony Diosdado U. Arceo", "PEFN02G<br/>(PE 2)", "", "Rhythmic Activities", "2", "0", "2", "ENG 108 - F 07:00AM-09:00AM SRDB1",
+            1, "Mr. Onald H. Valencian", "PHYL01G", "", "Physics 1", "3", "1", "4", "ENG 108 - M 01:00PM-04:00PM J411/TH 01:00PM-04:00PM S404"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList1stYr2ndSemBSCPEorBSCoE2013to2014");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule1stYr2ndSemBSCPEorBSCoE2013to2014"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 1st. yr., 2nd. Sem. - BS CPE/BS CoE (S.Y. 2013 - 2014)
+        english2 = "Writing in the Discipline<br/><br/>ENGN02G<br/>ENG 108<br/>J412;";
+        filipino2 = "Pagbasa at Pagsulat Tungo sa Pananaliksik<br/><br/>FILN02A<br/>ENG 108<br/>J414;";
+        jpl = "JPL Life and His Works<br/><br/>JPLN01G<br/>ENG 108<br/>J413;";
+        advancedAlgebra = "Advanced Engineering Algebra<br/><br/>MTHN08E<br/>ENG 108<br/>J414;";
+        solidMensuration = "Solid Mensuration<br/><br/>MTHN14E<br/>ENG 108<br/>J414;";
+        geometry = "Analytic Geometry<br/><br/>MTHN16E<br/>ENG 108<br/>J412;";
+        nstp2 = "National Service Training Program 2<br/><br/>NSTPN02G<br/>ENG 108<br/>JRDB1/S411;";
+        pe2 = "Rhythmic Activities<br/><br/>PEFN02G<br/>ENG 108<br/>SRDB1;";
+        physics1Class1 = "Physics 1<br/><br/>PHYL01G<br/>ENG 108<br/>J411;";
+        physics1Class2 = "Physics 1<br/><br/>PHYL01G<br/>ENG 108<br/>S404;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 6, nstp2, 0, breakSpace, 0, breakSpace, 4, pe2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, filipino2, 0, breakSpace, 0, breakSpace, 3, filipino2, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 4, solidMensuration, 3, jpl, 0, breakSpace, 4, advancedAlgebra, 3, jpl, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 6, physics1Class1, 3, english2, 0, breakSpace, 6, physics1Class2, 3, english2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 3, geometry, 0, breakSpace, 0, breakSpace, 3, geometry, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule1stYr2ndSemBSCPEorBSCoE2013to2014");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">2nd. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2014 - 2015)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList2ndYr1stSemBSCPEorBSCoE2014to2015"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2014 - 2015)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Mr. Arnel M. Avelino", "MTHN08E<br/>(Advanced Algebra)", "", "Advanced Engineering Algebra", "2", "0", "2", "ENG 101N - T 10:00AM-12:00PM TBA<br/>or<br/>ENG 101N - T 10:00AM-12:00PM S301",
+            1, "Ms. Vilma Mapula Leonidas", "HUMN02G", "", "Art Appreciation", "3", "0", "3", "ENG 201N - W 01:00PM-02:30PM S403/S 01:00PM-02:30PM S403",
+            1, "Mr. Brian James Dizon Punzalan", "MTHN21E<br/>(Dif Cal)", "", "Differential Calculus", "4", "0", "4", "ENG 203 - T 01:00PM-03:00PM S407/F 01:00PM-03:00PM S407",
+            1, "Ms. Myra Senica Ferrer", "PHYL02G", "", "Physics 2", "3", "1", "4", "ENG 203 - W 07:00AM-10:00AM S416/S 07:00AM-10:00AM S404",
+            1, "Mr. Michael Cordero Galo", "CFPL01E<br/>(Java)", "", "Computer Fundamentals and Programming", "0", "2", "2", "ENG 204 - M 04:00PM-07:00PM TBA/TH 04:00PM-07:00PM S209<br/>or<br/>ENG 204 - M 04:00PM-07:00PM S417/TH 04:00PM-07:00PM S209",
+            1, "Ms. Princess Dawn T. Rollon", "ENGN03C<br/>(English 3)", "", "English 3 (Technical Communication)", "3", "0", "3", "ENG 206 (ME) - M 02:30PM-04:00PM S309/TH 02:30PM-04:00PM S309",
+            1, "Mr. Jose Jomer Sepro Diana", "SSCN01G<br/>(Sociology)", "", "Sociology and Anthropology", "3", "0", "3", "PSY 202 - T 08:30AM-10:00AM J414/F 08:30AM-10:00AM J414"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList2ndYr1stSemBSCPEorBSCoE2014to2015");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule2ndYr1stSemBSCPEorBSCoE2014to2015"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2014 - 2015)
+        advancedAlgebra = "Advanced Engineering Algebra<br/><br/>MTHN08E<br/>ENG 101N<br/>S301;";
+        artAppreciation = "Art Appreciation<br/><br/>HUMN02G<br/>ENG 201N<br/>S403;";
+        difCal = "Differential Calculus<br/><br/>MTHN21E<br/>ENG 203<br/>S407;";
+        physics2Class1 = "Physics 2<br/><br/>PHYL02G<br/>ENG 203<br/>S416;";
+        physics2Class2 = "Physics 2<br/><br/>PHYL02G<br/>ENG 203<br/>S404;";
+        javaClass1 = "Computer Fundamentals and Programming<br/><br/>CFPL01E<br/>ENG 204<br/>S417;";
+        javaClass2 = "Computer Fundamentals and Programming<br/><br/>CFPL01E<br/>ENG 204<br/>S209;";
+        english3Type1 = "English 3 (Technical Communication)<br/><br/>ENGN03C<br/>ENG 206 (ME)<br/>S309;";
+        sociology = "Sociology and Anthropology<br/><br/>SSCN01G<br/>PSY 202<br/>J414;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 6, physics2Class1, 0, breakSpace, 0, breakSpace, 6, physics2Class2,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 3, sociology, 0, breakSpace, 0, breakSpace, 3, sociology, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 4, advancedAlgebra, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 4, difCal, 3, artAppreciation, 0, breakSpace, 4, difCal, 3, artAppreciation,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, english3Type1, 0, breakSpace, 0, breakSpace, 3, english3Type1, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 6, javaClass1, 0, breakSpace, 0, breakSpace, 6, javaClass2, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule2ndYr1stSemBSCPEorBSCoE2014to2015");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">2nd. yr., 2nd. Sem. - BS CPE/BS CoE (S.Y. 2014 - 2015)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList2ndYr2ndSemBSCPEorBSCoE2014to2015"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 2nd. Sem. - BS CPE/BS CoE (S.Y. 2014 - 2015)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Mr. Rexieden Rarzabal Barrera", "ECON01G<br/>(Economics)", "", "Principles of Economics with LRT", "3", "0", "3", "ABC 202 - T 10:00AM-11:30AM J404/F 10:00AM-11:30AM J404",
+            1, "Ms. Janet Jay N. Amboy", "LWRN01G<br/>(Rizal)", "", "Life and Works of Rizal", "3", "0", "3", "ABC 202 - T 01:00PM-04:00PM J402",
+            1, "Ms. Rhia Vergara Espanto", "CHFL01E", "", "Computer Hardware Fundamentals", "0", "1", "1", "CPE 201 - W 10:00AM-01:00PM S414",
+            1, "Ms. Jocelyn Balagao Bernardino", "DSAL32E<br/>(C++)", "", "Data Structure and Algorithm Analysis", "3", "1", "4", "CPE 201 - M 11:30AM-02:30PM S209/TH 11:30AM-02:30PM S417",
+            1, "Mr. Froilan A. Santillan", "PHIN01G", "", "Philosophy", "3", "0", "3", "CPE 201 - M 02:30PM-04:00PM S310/TH 02:30PM-04:00PM S310",
+            1, "Mr. Jovel Paolo D. Bautista", "PEFN04G<br/>(PE 4)", "", "Team Sports / Games", "2", "0", "2", "ECE 201 - F 01:00PM-03:00PM SRDB1",
+            1, "Ms. Josefina Cadorniga de Castro", "MTHN21E<br/>(Dif Cal)", "", "Differential Calculus", "4", "0", "4", "ENG 202N - M 04:00PM-06:00PM S313/TH 04:00PM-06:00PM S313",
+            1, "Ms. Annalou Austria Gutierrez", "HUMN01G<br/>(Humanities)", "", "Introduction to Humanities", "3", "0", "3", "LS 201 - M 10:00AM-11:30AM J409/TH 10:00AM-11:30AM J409"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList2ndYr2ndSemBSCPEorBSCoE2014to2015");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule2ndYr2ndSemBSCPEorBSCoE2014to2015"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 2nd. Sem. - BS CPE/BS CoE (S.Y. 2014 - 2015)
+        economics = "Principles of Economics with LRT<br/><br/>ECON01G<br/>ABC 202<br/>J404;";
+        rizal = "Life and Works of Rizal<br/><br/>LWRN01G<br/>ABC 202<br/>J402;";
+        computerHardwareFundamentals = "Computer Hardware Fundamentals<br/><br/>CHFL01E<br/>CPE 201<br/>S414;";
+        cPlusPlusClass1 = "Data Structure and Algorithm Analysis<br/><br/>DSAL32E<br/>CPE 201<br/>S209;";
+        cPlusPlusClass2 = "Data Structure and Algorithm Analysis<br/><br/>DSAL32E<br/>CPE 201<br/>S417;";
+        philosophy = "Philosophy<br/><br/>PHIN01G<br/>CPE 201<br/>S310;";
+        pe4 = "Team Sports / Games<br/><br/>PEFN04G<br/>ECE 201<br/>SRDB1;";
+        difCal = "Differential Calculus<br/><br/>MTHN21E<br/>ENG 202N<br/>S313;";
+        humanities = "Introduction to Humanities<br/><br/>HUMN01G<br/>LS 201<br/>J409;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, humanities, 3, economics, 6, computerHardwareFundamentals, 3, humanities, 3, economics, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 6, cPlusPlusClass1, 0, breakSpace, 0, breakSpace, 6, cPlusPlusClass2, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 6, rizal, 0, breakSpace, 0, breakSpace, 4, pe4, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, philosophy, 0, breakSpace, 0, breakSpace, 3, philosophy, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 4, difCal, 0, breakSpace, 0, breakSpace, 4, difCal, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule2ndYr2ndSemBSCPEorBSCoE2014to2015");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">3rd. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2015 - 2016)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList3rdYr1stSemBSCPEorBSCoE2015to2016"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 3rd. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2015 - 2016)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Ms. Ruby Bautista Heramia", "PSYN01G<br/>(Psychology)", "", "General Psychology", "3", "0", "3", "BA-MA 101 - T 01:00PM-02:30PM J320/F 01:00PM-02:30PM J320",
+            1, "Mr. James Mi&ntilde;on Tepace", "DRWL12E<br/>(AutoCAD)", "", "Computer-Aided Drafting", "0", "1", "1", "CE 302 - T 10:00AM-01:00PM S209",
+            1, "Mr. Jerny Dispulo Catibayan", "MTHN22E<br/>(Integral)", "", "Integral Calculus", "4", "0", "4", "ENG 201N - T 08:00AM-10:00AM S320/F 08:00AM-10:00AM S320"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList3rdYr1stSemBSCPEorBSCoE2015to2016");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule3rdYr1stSemBSCPEorBSCoE2015to2016"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 3rd. yr., 1st. Sem. - BS CPE/BS CoE (S.Y. 2015 - 2016)
+        psychology = "General Psychology<br/><br/>PSYN01G<br/>BA-MA 101<br/>J320;";
+        autoCAD = "Computer-Aided Drafting<br/><br/>DRWL12E<br/>CE 302<br/>S209;";
+        integral = "Integral Calculus<br/><br/>MTHN22E<br/>ENG 201N<br/>S320;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 4, integral, 0, breakSpace, 0, breakSpace, 4, integral, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 6, autoCAD, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 3, psychology, 0, breakSpace, 0, breakSpace, 3, psychology, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule3rdYr1stSemBSCPEorBSCoE2015to2016");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">1st. yr., 2nd. Sem. - BS IT (S.Y. 2015 - 2016)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList1stYr2ndSemBSIT2015to2016"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 1st. yr., 2nd. Sem. - BS IT (S.Y. 2015 - 2016)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Mr. Reginald H. Gonzales", "ENGN03G<br/>(Speech Com)<br/>(English 3)", "", "Speech Communication", "3", "0", "3", "ABC 202 - M 10:00AM-11:30AM J205/TH 10:00AM-11:30AM S203",
+            1, "Ms. Amalia A. Olorocisimo", "FILN03A", "", "Masining na Pagpapahayag", "3", "0", "3", "HRA 401 - M 01:00PM-02:30PM S316/TH 01:00PM-02:30PM S316",
+            1, "Ms. Annabelle B. Sulapas", "ITFL02C<br/>(Java 1)", "", "Java Programming 1", "2", "1", "3", "IT 101-IRREG - S 01:00PM-04:00PM S204/S 10:00AM-12:00PM J320",
+            1, "Ms. Cristina C. Gonzales", "ITEL07C<br/>(Math App)", "", "Mathematical Applications in IT", "3", "0", "3", "IT 102 - T 04:00PM-05:30PM S304/F 04:00PM-05:30PM S304",
+            1, "Ms. Josefina Cadorniga de Castro", "MATN07G<br/>(Pre-Cal)", "", "Pre-Calculus & Functional Mathematics", "3", "0", "3", "IT 103 - M 02:30PM-04:00PM J318/TH 02:30PM-04:00PM J318",
+            1, "Mr. Harold Balgoma Pangilinan", "HISN01G", "", "Philippine History", "3", "0", "3", "MT 201 - M 08:30AM-10:00AM S422/TH 08:30AM-10:00AM S422"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList1stYr2ndSemBSIT2015to2016");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule1stYr2ndSemBSIT2015to2016"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 1st. yr., 2nd. Sem. - BS IT (S.Y. 2015 - 2016)
+        english3Type2Class1 = "Speech Communication<br/><br/>ENGN03G<br/>ABC 202<br/>J205;";
+        english3Type2Class2 = "Speech Communication<br/><br/>ENGN03G<br/>ABC 202<br/>S203;";
+        filipino = "Masining na Pagpapahayag<br/><br/>FILN03A<br/>HRA 401<br/>S316;";
+        java1Class1 = "Java Programming 1<br/><br/>ITFL02C<br/>IT 101-IRREG<br/>S204;";
+        java1Class2 = "Java Programming 1<br/><br/>ITFL02C<br/>IT 101-IRREG<br/>J320;";
+        mathApp = "Mathematical Applications in IT<br/><br/>ITEL07C<br/>IT 102<br/>S304;";
+        preCal = "Pre-Calculus & Functional Mathematics<br/><br/>MATN07G<br/>IT 103<br/>J318;";
+        philippineHistory = "Philippine History<br/><br/>HISN01G<br/>MT 201<br/>S422;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, philippineHistory, 0, breakSpace, 0, breakSpace, 3, philippineHistory, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, english3Type2Class1, 0, breakSpace, 0, breakSpace, 3, english3Type2Class2, 0, breakSpace, 4, java1Class2,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, filipino, 0, breakSpace, 0, breakSpace, 3, filipino, 0, breakSpace, 6, java1Class1,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, preCal, 0, breakSpace, 0, breakSpace, 3, preCal, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 3, mathApp, 0, breakSpace, 0, breakSpace, 3, mathApp, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule1stYr2ndSemBSIT2015to2016");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">2nd. yr., 1st. Sem. - BS IT (S.Y. 2016 - 2017)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList2ndYr1stSemBSIT2016to2017"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 1st. Sem. - BS IT (S.Y. 2016 - 2017)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Engr. Glenn Y. Guevarra", "MATN03G<br/>(Basic Stat)", "", "Basic Statistics", "3", "0", "3", "BA-MM 403 - M 11:30AM-01:00PM S219/TH 11:30AM-01:00PM S219",
+            1, "Ms. Cristina C. Gonzales", "ITEN04C", "", "Discrete Structures", "3", "0", "3", "CS 201 - M 08:30AM-10:00AM S306/TH 08:30AM-10:00AM S306",
+            2, "Ms. Annabelle C. Dicay", "ITEL05C<br/>(Com Org)<br/>(Assembly Language)", "", "Computer Organization", "2", "1", "3", "CS 301 - W 10:00AM-01:00PM S201/W 07:00AM-09:00AM S217",
+            1, "Mr. Michael Cordero Galo", "", "", "", "", "", "", "IT 304 - W 01:00PM-04:00PM TBA/W 10:00AM-12:00PM TBA<br/>or<br/>IT 304 - W 01:00PM-04:00PM (J209/S205)/W 10:00AM-12:00PM J209",
+            1, "Mr. Joven B. Cajigas", "ITEN14C<br/>(Ethics)", "", "Professional Ethics & Intro to the ICT Profession", "3", "0", "3", "CS 401 - S 10:00AM-01:00PM S302",
+            1, "Ms. Marnelli Papa Marges", "PEFN03G<br/>(PE 3)", "", "Individual Sports/Games", "2", "0", "2", "ENG 202 - F 09:00AM-11:00AM SRDB1",
+            1, "Ms. Herchel A. Aquines", "ITFL01C", "", "IT Fundamentals<br/>or<br/>Introduction to Computing", "2", "1", "3", "IT 101 - T 07:00AM-10:00AM S201/F 07:00AM-09:00AM S217",
+            1, "Ms. Norlene K. Lastra", "LITN01G<br/>(Philippine Lit)", "", "The Literatures of the Philippines", "3", "0", "3", "MMA 202 - M 10:00AM-11:30AM J322/TH 10:00AM-11:30AM J322"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList2ndYr1stSemBSIT2016to2017");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule2ndYr1stSemBSIT2016to2017ChangeClass1"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 1st. Sem. - BS IT (S.Y. 2016 - 2017)
+        itFundamentalsClass1 = "Introduction to Computing<br/><br/>ITFL01C<br/>IT 101<br/>S201;";
+        itFundamentalsClass2 = "Introduction to Computing<br/><br/>ITFL01C<br/>IT 101<br/>S217;";
+        computerOrganizationClass1ChangeClass1 = "Computer Organization<br/><br/>ITEL05C<br/>CS 301<br/>S217;";
+        computerOrganizationClass2ChangeClass1 = "Computer Organization<br/><br/>ITEL05C<br/>CS 301<br/>S201;";
+        discreteStructures = "Discrete Structures<br/><br/>ITEN04C<br/>CS 201<br/>S306;";
+        pe4 = "Individual Sports/Games<br/><br/>PEFN03G<br/>ENG 202<br/>SRDB1;"
+        english2 = "The Literatures of the Philippines<br/><br/>LITN01G<br/>MMA 202<br/>J322;"
+        ethics = "Professional Ethics & Intro to the ICT Profession<br/><br/>ITEN14C<br/>CS 401<br/>S302;";
+        basicStatistics = "Basic Statistics<br/><br/>MATN03G<br/>BA-MM 403<br/>S219;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 6, itFundamentalsClass1, 4, computerOrganizationClass1ChangeClass1, 0, breakSpace, 4, itFundamentalsClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, discreteStructures, 0, breakSpace, 0, breakSpace, 3, discreteStructures, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 4, pe4, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, english2, 0, breakSpace, 6, computerOrganizationClass2ChangeClass1, 3, english2, 0, breakSpace, 6, ethics,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, basicStatistics, 0, breakSpace, 0, breakSpace, 3, basicStatistics, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule2ndYr1stSemBSIT2016to2017ChangeClass1");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule2ndYr1stSemBSIT2016to2017ChangeClass2"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 1st. Sem. - BS IT (S.Y. 2016 - 2017)
+        itFundamentalsClass1 = "Introduction to Computing<br/><br/>ITFL01C<br/>IT 101<br/>S201;";
+        itFundamentalsClass2 = "Introduction to Computing<br/><br/>ITFL01C<br/>IT 101<br/>S217;";
+        computerOrganizationClass1ChangeClass2 = "Computer Organization<br/><br/>ITEL05C<br/>IT 304<br/>J209/S205;";
+        computerOrganizationClass2ChangeClass2 = "Computer Organization<br/><br/>ITEL05C<br/>IT 304<br/>J209;";
+        discreteStructures = "Discrete Structures<br/><br/>ITEN04C<br/>CS 201<br/>S306;";
+        pe4 = "Individual Sports/Games<br/><br/>PEFN03G<br/>ENG 202<br/>SRDB1;"
+        english2 = "The Literatures of the Philippines<br/><br/>LITN01G<br/>MMA 202<br/>J322;"
+        ethics = "Professional Ethics & Intro to the ICT Profession<br/><br/>ITEN14C<br/>CS 401<br/>S302;";
+        basicStatistics = "Basic Statistics<br/><br/>MATN03G<br/>BA-MM 403<br/>S219;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 6, itFundamentalsClass1, 0, breakSpace, 0, breakSpace, 4, itFundamentalsClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, discreteStructures, 0, breakSpace, 0, breakSpace, 3, discreteStructures, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 4, pe4, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, english2, 0, breakSpace, 4, computerOrganizationClass2ChangeClass2, 3, english2, 0, breakSpace, 6, ethics,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, basicStatistics, 0, breakSpace, 0, breakSpace, 3, basicStatistics, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 6, computerOrganizationClass1ChangeClass2, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule2ndYr1stSemBSIT2016to2017ChangeClass2");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">2nd. yr., 2nd. Sem. - BS IT (S.Y. 2016 - 2017)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList2ndYr2ndSemBSIT2016to2017"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 2nd. Sem. - BS IT (S.Y. 2016 - 2017)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Mr. Ralph de Jesus Fallago", "DCSN03C<br/>(Java 2)", "", "Computer Programming 2", "2", "1", "3", "CS 101 - T 01:00PM-04:00PM S201/F 01:00PM-03:00PM S302",
+            1, "Ms. Herchel A. Aquines", "ITEL13C<br/>(Web Prog)", "", "Web Programming & Development", "2", "1", "3", "IT 204 - T 10:00AM-12:00PM S302/F 10:00AM-01:00PM S201",
+            1, "Mr. Ryan B. Azur", "ITEL11C<br/>(Network)", "", "Network Management", "2", "1", "3", "IT 301 - T 07:00AM-09:00AM S301/F 07:00AM-10:00AM S213",
+            1, "Ms. Lynette Rufin Cortez", "ITEN10C<br/>(SAD)", "", "Systems Analysis and Design", "3", "0", "3", "PET- ITEN10C - W 08:30AM-10:00AM TBA/S 08:30AM-10:00AM TBA<br/>or<br/>PET- ITEN10C - W 08:30AM-10:00AM S317/S 08:30AM-10:00AM S317",
+            1, "Ms. Maricar Ramilo Sucaldito", "ELFRN2C<br/>(Android)", "", "ICT Elective w/ Lab 1", "2", "1", "3", "PET-ELFRN2C - M 10:00AM-12:00PM TBA/TH 10:00AM-01:00PM TBA<br/>or<br/>PET-ELFRN2C - M 10:00AM-12:00PM S302/TH 10:00AM-01:00PM S202",
+            1, "Mr. Ralph de Jesus Fallago", "ITEN17C<br/>(Multimedia)", "", "Multimedia Systems", "2", "1", "3", "PET-ITEN17C - W 04:00PM-07:00PM S202/S 04:00PM-06:00PM S424"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList2ndYr2ndSemBSIT2016to2017");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule2ndYr2ndSemBSIT2016to2017"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 2nd. yr., 2nd. Sem. - BS IT (S.Y. 2016 - 2017)
+        java2Class1 = "Computer Programming 2<br/><br/>DCSN03C<br/>CS 101<br/>S201;";
+        java2Class2 = "Computer Programming 2<br/><br/>DCSN03C<br/>CS 101<br/>S302;";
+        webProgClass1 = "Web Programming & Development<br/><br/>ITEL13C<br/>IT 204<br/>S302;";
+        webProgClass2 = "Web Programming & Development<br/><br/>ITEL13C<br/>IT 204<br/>S201;";
+        networkClass1 = "Network Management<br/><br/>ITEL11C<br/>IT 301<br/>S301;";
+        networkClass2 = "Network Management<br/><br/>ITEL11C<br/>IT 301<br/>S213;";
+        sad = "Systems Analysis and Design<br/><br/>ITEN10C<br/>PET- ITEN10C<br/>S317;";
+        androidClass1 = "ICT Elective w/ Lab 1<br/><br/>ELFRN2C<br/>PET-ELFRN2C<br/>S302;";
+        androidClass2 = "ICT Elective w/ Lab 1<br/><br/>ELFRN2C<br/>PET-ELFRN2C<br/>S202;";
+        multimediaClass1 = "Multimedia Systems<br/><br/>ITEN17C<br/>PET-ITEN17C<br/>S202;";
+        multimediaClass2 = "Multimedia Systems<br/><br/>ITEN17C<br/>PET-ITEN17C<br/>S424;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 4, networkClass1, 0, breakSpace, 0, breakSpace, 6, networkClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 3, sad, 0, breakSpace, 0, breakSpace, 3, sad,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 4, androidClass1, 4, webProgClass1, 0, breakSpace, 6, androidClass2, 6, webProgClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 6, java2Class1, 0, breakSpace, 0, breakSpace, 4, java2Class2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 6, multimediaClass1, 0, breakSpace, 0, breakSpace, 4, multimediaClass2,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule2ndYr2ndSemBSIT2016to2017");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">3rd. yr., 1st. Sem. - BS IT (S.Y. 2017 - 2018)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList3rdYr1stSemBSIT2017to2018"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 3rd. yr., 1st. Sem. - BS IT (S.Y. 2017 - 2018)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [2, "Mr. Mark Javier", "ENGN10A", "", "Fundamentals of English", "3", "0", "3", "FRES 102 - M 07:00AM-08:30AM S422/TH 07:00AM-08:30AM S422",
+            1, "Mr. Ian Karlo Alvez Olegario", "", "", "", "", "", "", "FRES 103 - M 07:00AM-08:30AM J211/TH 07:00AM-08:30AM J211",
+            1, "Mr. Ryan B. Azur", "ELECL1C<br/>(C#)", "", "Elective w/ Laboratory 2", "2", "1", "3", "IT 304 - M 10:00AM-12:00PM S417/TH 10:00AM-01:00PM S211",
+            1, "Mr. Edison E. Feranil", "ELFRN1C<br/>(A+)", "", "Gen. Program Elective 1", "2", "1", "3", "IT 304 - S 11:30AM-01:30PM S417/S 07:00AM-10:00AM S213",
+            1, "Mr. Raymund Perlado Constante", "ITEN09C<br/>(OS)", "", "Operating Systems and Applications", "3", "0", "3", "IT 304 - M 04:00PM-05:30PM S313/TH 04:00PM-05:30PM S313",
+            1, "Mr. Elmer C. Matel", "ELECL2C<br/>(Advanced Web)", "", "Elective w/ Laboratory 3", "2", "1", "3", "IT 404 - T 01:00PM-04:00PM S202/F 02:00PM-04:00PM S314",
+            1, "Mr. Raymund Perlado Constante", "ITEL08C<br/>(Database 1)", "", "Database Management Systems 1", "2", "1", "3", "ITEL08C PET - W 02:00PM-04:00PM S302/W 10:00AM-01:00PM S201",
+            1, "Mr. Ryan B. Azur", "ITFL06C<br/>(OOP)", "", "Object Oriented Programming", "2", "1", "3", "ITFL06C PET - T 05:30PM-07:30PM TBA/F 04:00PM-07:00PM S211<br/>or<br/>ITFL06C PET - T 05:30PM-07:30PM (S417/S213)/F 04:00PM-07:00PM S211"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList3rdYr1stSemBSIT2017to2018");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule3rdYr1stSemBSIT2017to2018ChangeClass1"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 3rd. yr., 1st. Sem. - BS IT (S.Y. 2017 - 2018)
+        englishChangeClass1 = "Fundamentals of English<br/><br/>ENGN10A<br/>FRES 102<br/>S422;";
+        cSharpClass1 = "Elective w/ Laboratory 2<br/><br/>ELECL1C<br/>IT 304<br/>S417;";
+        cSharpClass2 = "Elective w/ Laboratory 2<br/><br/>ELECL1C<br/>IT 304<br/>S211;";
+        aPlusClass1 = "Gen. Program Elective 1<br/><br/>ELFRN1C<br/>IT 304<br/>S417;";
+        aPlusClass2 = "Gen. Program Elective 1<br/><br/>ELFRN1C<br/>IT 304<br/>S213;";
+        os = "Operating Systems and Applications<br/><br/>ITEN09C<br/>IT 304<br/>S313;";
+        advancedWebClass1 = "Elective w/ Laboratory 3<br/><br/>ELECL2C<br/>IT 404<br/>S202;";
+        advancedWebClass2 = "Elective w/ Laboratory 3<br/><br/>ELECL2C<br/>IT 404<br/>S314;";
+        database1Class1 = "Database Management Systems 1<br/><br/>ITEL08C<br/>ITEL08C PET<br/>S302;";
+        database1Class2 = "Database Management Systems 1<br/><br/>ITEL08C<br/>ITEL08C PET<br/>S201;";
+        oopClass1 = "Object Oriented Programming<br/><br/>ITFL06C<br/>ITFL06C PET<br/>S417/S213;";
+        oopClass2 = "Object Oriented Programming<br/><br/>ITFL06C<br/>ITFL06C PET<br/>S211;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 3, englishChangeClass1, 0, breakSpace, 0, breakSpace, 3, englishChangeClass1, 0, breakSpace, 6, aPlusClass2,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 4, cSharpClass1, 0, breakSpace, 6, database1Class2, 6, cSharpClass2, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 4, aPlusClass1,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 6, advancedWebClass1, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 4, database1Class1, 0, breakSpace, 4, advancedWebClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, os, 0, breakSpace, 0, breakSpace, 3, os, 6, oopClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 4, oopClass1, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule3rdYr1stSemBSIT2017to2018ChangeClass1");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule3rdYr1stSemBSIT2017to2018ChangeClass2"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 3rd. yr., 1st. Sem. - BS IT (S.Y. 2017 - 2018)
+        englishChangeClass2 = "Fundamentals of English<br/><br/>ENGN10A<br/>FRES 103<br/>J211;";
+        cSharpClass1 = "Elective w/ Laboratory 2<br/><br/>ELECL1C<br/>IT 304<br/>S417;";
+        cSharpClass2 = "Elective w/ Laboratory 2<br/><br/>ELECL1C<br/>IT 304<br/>S211;";
+        aPlusClass1 = "Gen. Program Elective 1<br/><br/>ELFRN1C<br/>IT 304<br/>S417;";
+        aPlusClass2 = "Gen. Program Elective 1<br/><br/>ELFRN1C<br/>IT 304<br/>S213;";
+        os = "Operating Systems and Applications<br/><br/>ITEN09C<br/>IT 304<br/>S313;";
+        advancedWebClass1 = "Elective w/ Laboratory 3<br/><br/>ELECL2C<br/>IT 404<br/>S202;";
+        advancedWebClass2 = "Elective w/ Laboratory 3<br/><br/>ELECL2C<br/>IT 404<br/>S314;";
+        database1Class1 = "Database Management Systems 1<br/><br/>ITEL08C<br/>ITEL08C PET<br/>S302;";
+        database1Class2 = "Database Management Systems 1<br/><br/>ITEL08C<br/>ITEL08C PET<br/>S201;";
+        oopClass1 = "Object Oriented Programming<br/><br/>ITFL06C<br/>ITFL06C PET<br/>S417/S213;";
+        oopClass2 = "Object Oriented Programming<br/><br/>ITFL06C<br/>ITFL06C PET<br/>S211;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 3, englishChangeClass2, 0, breakSpace, 0, breakSpace, 3, englishChangeClass2, 0, breakSpace, 6, aPlusClass2,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 4, cSharpClass1, 0, breakSpace, 6, database1Class2, 6, cSharpClass2, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 4, aPlusClass1,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 6, advancedWebClass1, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 4, database1Class1, 0, breakSpace, 4, advancedWebClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, os, 0, breakSpace, 0, breakSpace, 3, os, 6, oopClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 4, oopClass1, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule3rdYr1stSemBSIT2017to2018ChangeClass2");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">3rd. yr., 2nd. Sem. - BS IT (S.Y. 2017 - 2018)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList3rdYr2ndSemBSIT2017to2018"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 3rd. yr., 2nd. Sem. - BS IT (S.Y. 2017 - 2018)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Mr. Elmer C. Matel", "ELECL4C<br/>(Game Dev)", "", "ICT Elective w/ Laboratory 4", "2", "1", "3", "IT 304 - M 10:00AM-12:00PM S313/TH 10:00AM-01:00PM S202",
+            1, "Mr. Rommel B. Dy", "ITEL15C<br/>(SE)", "", "Software Engineering", "3", "0", "3", "IT 304 - M 04:00PM-05:30PM S313/TH 04:00PM-05:30PM S313",
+            1, "Mr. Carlo Enrico G. Ersando", "ITEL12C<br/>(Database 2)", "", "Database Management Systems (Advanced)", "2", "1", "3", "ITEL12C PET - S 07:00AM-09:00AM S301/S 10:00AM-01:00PM S203",
+            1, "Mr. Anthony I. Samac", "BACN01B<br/>(Basic Accounting)", "", "Accounting for Non-Accountants", "3", "0", "3", "PET BACN01B - M 02:30PM-04:00PM TBA/TH 02:30PM-04:00PM TBA<br/>changed to<br/>PET BACN01B - W 10:00AM-11:30AM (J402/S305)/TH 01:00PM-04:00PM (S318/S303/S301)"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList3rdYr2ndSemBSIT2017to2018");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule3rdYr2ndSemBSIT2017to2018"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 3rd. yr., 2nd. Sem. - BS IT (S.Y. 2017 - 2018)
+        gameDevClass1 = "ICT Elective w/ Laboratory 4<br/><br/>ELECL4C<br/>IT 304<br/>S313;";
+        gameDevClass2 = "ICT Elective w/ Laboratory 4<br/><br/>ELECL4C<br/>IT 304<br/>S202;";
+        se = "Software Engineering<br/><br/>ITEL15C<br/>IT 304<br/>S313;";
+        database2Class1 = "Database Management Systems (Advanced)<br/><br/>ITEL12C<br/>ITEL12C PET<br/>S301;";
+        database2Class2 = "Database Management Systems (Advanced)<br/><br/>ITEL12C<br/>ITEL12C PET<br/>S203;";
+        basicAccountingClass1 = "Accounting for Non-Accountants<br/><br/>BACN01B<br/>PET BACN01B<br/>J402/S305;";
+        basicAccountingClass2 = "Accounting for Non-Accountants<br/><br/>BACN01B<br/>PET BACN01B<br/>S318/S303/S301;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 4, database2Class1,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 4, gameDevClass1, 0, breakSpace, 3, basicAccountingClass1, 6, gameDevClass2, 0, breakSpace, 6, database2Class2,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 6, basicAccountingClass2, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 3, se, 0, breakSpace, 0, breakSpace, 3, se, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule3rdYr2ndSemBSIT2017to2018");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">Summer 2nd Sem. - BS IT (S.Y. 2017 - 2018)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataListSummer2ndSemBSIT2017to2018"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // Summer 2nd Sem. - BS IT (S.Y. 2017 - 2018)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [2, "Ms. Alyssa Paola A. Pocaan (Internship Adviser)", "WILN01I<br/>(On-the-Job-Training)<br/>or<br/>(OJT)", "", "Practicum / Work Integrated Learning", "6", "0", "6", "Lyceum of the Philippines University - Cavite Campus<br/>IT 303 - S 08:00AM-05:00PM TBA",
+            1, "(Credit Department)<br/>Ms. Cherry Lou G. Ramirez (Head Supervisor)<br/><br/>(MIS Department)<br/>Ms. Evelyn H. Cantada (Head Supervisor)", "", "", "", "", "", "", "Dasmari&ntilde;as Water District - Main Branch / Prime Water<br/>(Credit and Collection Department with Accounting)<br/>or<br/>(Credit Department)<br/>M/T/W/TH/F 08:00AM-05:00PM<br/>S 08:00AM-12:00PM<br/><br/>(Management Information Systems Department)<br/>or<br/>(MIS Department)<br/>M/T/W/TH/F 08:00AM-05:00PM<br/>S 08:00AM-12:00PM / S 08:00AM-05:00PM"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataListSummer2ndSemBSIT2017to2018");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">4th. yr., 1st. Sem. - BS IT (S.Y. 2018 - 2019)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList4thYr1stSemBSIT2018to2019"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 4th. yr., 1st. Sem. - BS IT (S.Y. 2018 - 2019)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Mr. Genson Poblete Mendoza", "ELECN3C<br/>(Management Information System) or (MIS)", "", "General Elective 3", "3", "0", "3", "IT 404 - W 07:00AM-10:00AM S303",
+            3, "Mr. Joven B. Cajigas (Adviser)", "WILN02I<br/>(Capstone 1)", "", "Practicum/Work Integrated Learning 2 (Capstone)", "3", "0", "3", "IT 404 - W 01:00PM-4:00PM S303",
+            1, "Mr. Rommel B. Dy (Technical Adviser)", "", "", "", "", "", "", "M/T/W/TH/F/S 7:00AM - 4:00PM",
+            1, "(Panel Members)<br/>Ms. Elizabeth Sanyu Nsubuga (Panel 1)<br/>Ms. Herchel A. Aquines (Panel 2)<br/>Mr. Genson Poblete Mendoza (Panel 3)", "", "", "", "", "", "", "(Dec. 10, 2018) M 2:30PM - 4:00PM S213<br/>retake to<br/>(Dec. 17, 2018) M 12:00PM - 1:00PM S219"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList4thYr1stSemBSIT2018to2019");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule4thYr1stSemBSIT2018to2019"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 4th. yr., 1st. Sem. - BS IT (S.Y. 2018 - 2019)
+        mis = "General Elective 3<br/><br/>ELECN3C<br/>IT 404<br/>S303;";
+        capstone1 = "Practicum/Work Integrated Learning 2 (Capstone)<br/><br/>WILN02I<br/>IT 404<br/>S303;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 6, mis, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 6, capstone1, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule4thYr1stSemBSIT2018to2019");
+    </script>
+
+
+    <p>
+        <br/><br/>
+        <hr/>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center" cellspacing = "0" cellpadding = "10">
+        <tr>
+            <th colspan = "9" id = "No_Wrap">4th. yr., 2nd. Sem. - BS IT (S.Y. 2018 - 2019)</th>
+        </tr>
+        <tr>
+            <th>#</th>
+            <th>Faculty</th>
+            <th>Course Code</th>
+            <th>Syllabus</th>
+            <th>Description</th>
+            <th>Lec</th>
+            <th>Lab</th>
+            <th>Units</th>
+            <th>Schedule</th>
+        </tr>
+        <tr id = "displayDataList4thYr2ndSemBSIT2018to2019"></tr>
+<!--
+        <tr align = "center">
+            <td id = "No_Wrap"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td id = "No_Wrap"></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // 4th. yr., 2nd. Sem. - BS IT (S.Y. 2018 - 2019)
+        dataNames = ["rowSpan", "Faculty", "CourseCode", "Syllabus", "Description", "Lec", "Lab", "Units", "Schedule"];
+
+        dataList = [1, "Mr. Andrew S. Sinfuego", "ELFRN3C<br/>(iOS)", "", "Gen. Program Elective 2", "2", "1", "3", "IT 404 - T 01:00PM-03:00PM S316/F 01:00PM-04:00PM S210",
+            3, "Mr. Joven B. Cajigas (Adviser)", "ITEN20C<br/>(Capstone 2)", "", "Capstone Project", "3", "0", "3", "IT 404 - F 10:00AM-01:00PM S319",
+            1, "Mr. Rommel B. Dy (Technical Adviser)", "", "", "", "", "", "", "M/T/W/TH/F/S 7:00AM - 4:00PM",
+            1, "(Panel Members)<br/>Mr. Andrew S. Sinfuego (Panel 1)<br/>Ms. Herchel A. Aquines (Panel 2)<br/>Ms. Jocelyn Balagao Bernardino (Panel 3)", "", "", "", "", "", "", "(May 4, 2019) S 2:30PM - 4:00PM S417"];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataList("displayDataList4thYr2ndSemBSIT2018to2019");
+    </script>
+
+
+    <p>
+        <br/><br/>
+    </p>
+
+
+    <table border = "2" align = "center">
+        <tr>
+            <td></td>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+        </tr>
+        <tr id = "displayDataSchedule4thYr2ndSemBSIT2018to2019"></tr>
+<!--
+        <tr align = "center">
+            <th rowspan = "2"><font size = "1">9:00&nbsp;PM</font><br/>
+                9:30&nbsp;PM<br/>
+                <font size = "1">9:59&nbsp;PM</font>
+            </th>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+        <tr align = "center">
+
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+            <td><br/><br/></td>
+        </tr>
+-->
+    </table>
+    <script>
+        // Undone
+        // Stop Here
+        // 4th. yr., 2nd. Sem. - BS IT (S.Y. 2018 - 2019)
+        iOSClass1 = "Gen. Program Elective 2<br/><br/>ELFRN3C<br/>IT 404<br/>S316;";
+        iOSClass2 = "Gen. Program Elective 2<br/><br/>ELFRN3C<br/>IT 404<br/>S210;";
+        capstone2 = "Capstone Project<br/><br/>ITEN20C<br/>IT 404<br/>S319;";
+        breakSpace = "<p><br/><br/></p>";
+
+        dataNames = ["rowSpanSunday", "Sunday", "rowSpanMonday", "Monday", "rowSpanTuesday", "Tuesday", "rowSpanWednesday", "Wednesday", "rowSpanThursday", "Thursday", "rowSpanFriday", "Friday", "rowSpanSaturday", "Saturday"];
+        dataList = [0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 6, capstone2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 4, iOSClass1, 0, breakSpace, 0, breakSpace, 6, iOSClass2, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace,
+            0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace, 0, breakSpace];
+
+        JSONformat2Arrays(dataList.length, dataNames.length, dataNames, dataList);
+        resultDataSchedule("displayDataSchedule4thYr2ndSemBSIT2018to2019");
+    </script>
+
+</body>
+</html>
